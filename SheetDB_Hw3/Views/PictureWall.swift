@@ -49,10 +49,8 @@ struct PictureWall: View {
                     } .frame(height: 135)
                 }
                 ForEach(0..<AllPostList.count, id: \.self){ (index) in
-                    NavigationLink(destination: PostRow(Post: self.AllPostList[self.AllPostList.count - index - 1])){
                         PostRow(Post: self.AllPostList[self.AllPostList.count - index - 1])
-                        
-                    }.listRowInsets(EdgeInsets())
+                        .listRowInsets(EdgeInsets())
                         .offset(x:7)
                         .padding(.bottom, 30)
                 }
