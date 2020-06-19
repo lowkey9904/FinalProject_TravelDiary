@@ -41,6 +41,24 @@ class ApiControl{
         }.resume()
     }
     
+    func GetAllUserAPI(completion: @escaping((Result<[UGProfileDec], NetworkError>) -> Void)) {
+        let url = URL(string: "https://dev-976098.okta.com/api/v1/users?limit=200")
+        var urlRequest = URLRequest(url: url!)
+        urlRequest.httpMethod = "GET"
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        urlRequest.setValue("SSWS 00Nv7lHk73t3tqrNP2d593tEshKK0kXWyHTLCTpc4u", forHTTPHeaderField: "Authorization")
+        
+        URLSession.shared.dataTask(with: urlRequest) { (retData, res, err) in
+            let decoder = JSONDecoder()
+            if let retData = retData, let dic = try?decoder.decode([UGProfileDec].self, from: retData){
+                completion(.success(dic))
+            }else{
+                completion(.failure(NetworkError.Error))
+                //print(String(data: retData!, encoding: .utf8))
+            }
+        }.resume()
+    }
+    
     func LoginAPI(LoginUserName:String, LoginPassWord:String, completion: @escaping((Result<LoginDec, NetworkError>) -> Void)){
         let url = URL(string: "https://dev-976098.okta.com/api/v1/authn")
         var urlRequest = URLRequest(url: url!)
@@ -52,7 +70,7 @@ class ApiControl{
             var username:String
             var password:String
         }
-        var userLogin = Login(username: LoginUserName, password: LoginPassWord)
+        let userLogin = Login(username: LoginUserName, password: LoginPassWord)
         
         let jsonEncoder = JSONEncoder()
         if let data = try? jsonEncoder.encode(userLogin){
@@ -77,14 +95,23 @@ class ApiControl{
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
         urlRequest.setValue("SSWS 00Nv7lHk73t3tqrNP2d593tEshKK0kXWyHTLCTpc4u", forHTTPHeaderField: "Authorization")
         
+        struct ProfileR: Codable{
+            var firstName:String
+            var lastName:String
+            var email:String
+            var login:String
+            var birthday:String
+            var profileUrl:String
+        }
+        
         struct Register: Encodable {
             var profile: ProfileR
             var credentials: Credentials
         }
-        var userProfile = ProfileR(firstName: Rfirstname, lastName: Rlastname, email: Remail, login: Rlogin, birthday: Rbirthday, profileUrl: Rprofilurl)
-        var userPassword = Password(value: Rpassword)
-        var userCredentials = Credentials(password: userPassword)
-        var userRegister = Register(profile: userProfile, credentials: userCredentials)
+        let userProfile = ProfileR(firstName: Rfirstname, lastName: Rlastname, email: Remail, login: Rlogin, birthday: Rbirthday, profileUrl: Rprofilurl)
+        let userPassword = Password(value: Rpassword)
+        let userCredentials = Credentials(password: userPassword)
+        let userRegister = Register(profile: userProfile, credentials: userCredentials)
         
         let jsonEncoder = JSONEncoder()
         if let data = try? jsonEncoder.encode(userRegister){
@@ -113,9 +140,9 @@ class ApiControl{
             var password:Password
             var recovery_question: Recovery_Q
         }
-        var userRecovery_Q = Recovery_Q(question: UserRQ, answer: UserRA)
-        var userPassword = Password(value: UserPassword)
-        var userCRQ = CRQ(password: userPassword, recovery_question: userRecovery_Q)
+        let userRecovery_Q = Recovery_Q(question: UserRQ, answer: UserRA)
+        let userPassword = Password(value: UserPassword)
+        let userCRQ = CRQ(password: userPassword, recovery_question: userRecovery_Q)
         
         let jsonEncoder = JSONEncoder()
         if let data = try? jsonEncoder.encode(userCRQ){
@@ -160,8 +187,8 @@ class ApiControl{
         struct Modify: Encodable {
             var profile: MProfile
         }
-        var userMProfile = MProfile(firstName: Mfirstname, lastName: Mlastname, birthday: Mbirthday, profileUrl: Mprofileurl)
-        var userModify = Modify(profile: userMProfile)
+        let userMProfile = MProfile(firstName: Mfirstname, lastName: Mlastname, birthday: Mbirthday, profileUrl: Mprofileurl)
+        let userModify = Modify(profile: userMProfile)
         
         let jsonEncoder = JSONEncoder()
         if let data = try? jsonEncoder.encode(userModify){
@@ -169,6 +196,48 @@ class ApiControl{
             URLSession.shared.uploadTask(with: urlRequest, from: data) { (retData, res, err) in
                 let decoder = JSONDecoder()
                 if let retData = retData, let dic = try?decoder.decode(UGProfileDec.self, from: retData), dic.status == "ACTIVE"{
+                    completion(.success(dic))
+                }else{
+                    completion(.failure(NetworkError.Error))
+                    //print(String(data: retData!, encoding: .utf8))
+                }
+            }.resume()
+        }
+    }
+    
+    func GetFollowAPI(UserID:String, completion:@escaping((Result<FollowDec, GetProfileError>) -> Void)){
+        let url = URL(string:"https://dev-976098.okta.com/api/v1/users/" + UserID)
+        var urlRequest = URLRequest(url: url!)
+        urlRequest.httpMethod = "GET"
+        urlRequest.setValue("SSWS 00Nv7lHk73t3tqrNP2d593tEshKK0kXWyHTLCTpc4u", forHTTPHeaderField: "Authorization")
+        
+        URLSession.shared.dataTask(with: urlRequest) { (retData, res, err) in
+            let decoder = JSONDecoder()
+            if let retData = retData, let dic = try?decoder.decode(FollowDec.self, from: retData), dic.id != ""{
+                completion(.success(dic))
+            }else{
+                completion(.failure(GetProfileError.GPErr))
+                //print(String(data: retData!, encoding: .utf8))
+            }
+        }.resume()
+    }
+    
+    func ModifyFollowAPI(followID: String, followArray: [String], completion:@escaping((Result<Follow, NetworkError>)) -> Void){
+        let url = URL(string: "https://dev-976098.okta.com/api/v1/users/" + followID)
+        var urlRequest = URLRequest(url: url!)
+        urlRequest.httpMethod = "POST"
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        urlRequest.setValue("SSWS 00Nv7lHk73t3tqrNP2d593tEshKK0kXWyHTLCTpc4u", forHTTPHeaderField: "Authorization")
+        
+        let userFArray = FollowArray(followers: followArray)
+        let userFollow = Follow(profile: userFArray)
+        
+        let jsonEncoder = JSONEncoder()
+        if let data = try? jsonEncoder.encode(userFollow){
+            urlRequest.httpBody = data
+            URLSession.shared.uploadTask(with: urlRequest, from: data) { (retData, res, err) in
+                let decoder = JSONDecoder()
+                if let retData = retData, let dic = try?decoder.decode(Follow.self, from: retData){
                     completion(.success(dic))
                 }else{
                     completion(.failure(NetworkError.Error))
@@ -190,9 +259,9 @@ class ApiControl{
             var oldPassword:OPD
             var newPassword:NPD
         }
-        var userOPD = OPD(value: oldPassword)
-        var userNPD = NPD(value: newPassword)
-        var userMPD = MPD(oldPassword: userOPD, newPassword: userNPD)
+        let userOPD = OPD(value: oldPassword)
+        let userNPD = NPD(value: newPassword)
+        let userMPD = MPD(oldPassword: userOPD, newPassword: userNPD)
         
         let jsonEncoder = JSONEncoder()
         if let data = try? jsonEncoder.encode(userMPD){
@@ -297,14 +366,14 @@ class ApiControl{
             .eraseToAnyPublisher()
     }
     
-    func NewPostAPI(userID:String, userName: String, time: String, content:String, pictureURL:String, pictureURL2:String, location:String,  completion:@escaping((Result<PostDec, NetworkError>)) -> Void){
-        let url = URL(string: "https://sheetdb.io/api/v1/3405b64qct9mb")
+    func NewPostAPI(userID:String, userName: String, time: String, content:String, pictureURL:String, pictureURL2:String, pictureURL3:String, location:String,  completion:@escaping((Result<PostDec, NetworkError>)) -> Void){
+        let url = URL(string: "https://sheetdb.io/api/v1/69clm2obza0dr")
         var urlRequest = URLRequest(url: url!)
         urlRequest.httpMethod = "POST"
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
-        var userNewPostData = MyData(userID: userID, userName: userName, time: time, content: content, pictureURL: pictureURL, pictureURL2: pictureURL2, location: location)
-        var userNewPost = NewPostData(data: userNewPostData)
+        let userNewPostData = MyData(userID: userID, userName: userName, time: time, content: content, pictureURL: pictureURL, pictureURL2: pictureURL2, pictureURL3: pictureURL3, location: location)
+        let userNewPost = NewPostData(data: userNewPostData)
         
         let jsonEncoder = JSONEncoder()
         if let data = try? jsonEncoder.encode(userNewPost){
@@ -323,7 +392,7 @@ class ApiControl{
     }
     
     func GetAllPostAPI(completion:@escaping((Result<[MyData], NetworkError>)) -> Void){
-        let url = URL(string: "https://sheetdb.io/api/v1/3405b64qct9mb")
+        let url = URL(string: "https://sheetdb.io/api/v1/69clm2obza0dr")
         var urlRequest = URLRequest(url: url!)
         urlRequest.httpMethod = "GET"
         URLSession.shared.dataTask(with: urlRequest) { (retData, res, err) in
@@ -335,6 +404,24 @@ class ApiControl{
                 //print(String(data: retData!, encoding: .utf8))
             }
         }.resume()
+    }
+    
+    func GetYourAttractions(lat:String, long:String, completion:@escaping((Result<Attractions, NetworkError>)) -> Void) {
+        let url = URL(string: "https://www.travel.taipei/open-api/zh-tw/Attractions/All?nlat=" + lat + "&elong=" + long + "&page=1")
+        var urlRequest = URLRequest(url: url!)
+        urlRequest = URLRequest(url: url!)
+        urlRequest.httpMethod = "GET"
+        urlRequest.setValue("application/json", forHTTPHeaderField: "accept")
+        URLSession.shared.dataTask(with: urlRequest) { (retData, res, err) in
+            let decoder = JSONDecoder()
+            if let retData = retData, let dic = try?decoder.decode(Attractions.self, from: retData){
+                completion(.success(dic))
+            }else{
+                completion(.failure(NetworkError.Error))
+                //print(String(data: retData!, encoding: .utf8))
+            }
+        }.resume()
+        
     }
     
 }

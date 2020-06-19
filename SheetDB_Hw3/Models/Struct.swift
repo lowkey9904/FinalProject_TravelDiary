@@ -20,7 +20,7 @@ enum GetPhotoURLError: Error {
     case GPUErr
 }
 
-struct Profile: Codable{
+struct ProfileU: Codable{
     var login:String
     var firstName:String
     var lastName:String
@@ -28,7 +28,7 @@ struct Profile: Codable{
 
 struct User: Codable{
     var id:String
-    var profile: Profile
+    var profile: ProfileU
 }
 
 struct Embedded: Codable{
@@ -41,13 +41,14 @@ struct LoginDec: Codable {
     var _embedded: Embedded
 }
 
-struct ProfileR: Codable{
+struct Profile: Codable{
     var firstName:String
     var lastName:String
     var email:String
     var login:String
     var birthday:String
     var profileUrl:String
+    //var followers:[String]
 }
 
 struct Password: Encodable {
@@ -61,24 +62,14 @@ struct Credentials: Encodable{
 struct RegisterDec: Codable {
     var status:String
     var id:String
-    var profile:ProfileR
-}
-
-struct ProfileUG: Codable {
-    var firstName:String
-    var lastName:String
-    var email:String
-    var login:String
-    var birthday:String
-    var profileUrl:String
+    var profile:Profile
 }
 
 struct UGProfileDec: Codable{
     var id:String
     var status:String
     var created:String
-    var lastLogin:String
-    var profile:ProfileUG
+    var profile:Profile
 }
 
 struct UploadImageResult: Decodable {
@@ -93,6 +84,19 @@ struct MProfile: Codable{
     var lastName:String?
     var birthday:String?
     var profileUrl:String?
+}
+
+struct Follow: Codable {
+    var profile: FollowArray
+}
+
+struct FollowArray: Codable{
+    var followers: [String]
+}
+
+struct FollowDec: Codable{
+    var id:String
+    var profile: FollowArray
 }
 
 struct OPD: Codable {
@@ -114,7 +118,10 @@ struct MPDDec: Codable {
 
 struct FindLoginProfile: Codable {
     var login:String
+    var firstName:String
+    var lastName:String
     var email:String
+    var profileUrl:String
 }
 
 struct AllUserDec: Codable {
@@ -143,6 +150,7 @@ struct MyData: Codable{
     var content:String
     var pictureURL:String
     var pictureURL2:String
+    var pictureURL3:String
     var location:String
 }
 
@@ -163,4 +171,14 @@ struct ImgurDec: Decodable {
     var success:Bool
 }
 
+struct AttData: Codable{
+    var name:String
+    var address:String
+    var tel:String
+    var url:String
+}
 
+struct Attractions: Codable{
+    var total:Int
+    var data: [AttData]
+}

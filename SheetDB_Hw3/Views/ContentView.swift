@@ -45,7 +45,7 @@ struct ContentView: View {
                 }.padding()
                     .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.white, lineWidth: 2))
                     .padding()
-                NavigationLink(destination: PictureWall(AllPostList: [], userGetProfile: self.userConGetProfile), isActive: $showProfileView){
+                NavigationLink(destination: PictureWall(AllPostList: [], AllUserData: [], userGetProfile:self.userConGetProfile), isActive: $showProfileView){
                 Button(action:{
                     ApiControl.shared.LoginAPI(LoginUserName: self.un, LoginPassWord: self.pd){
                         (result) in
@@ -130,7 +130,7 @@ struct ContentView: View {
     }
     
     func AutoLogin() -> Void {
-        if userDefaults.string(forKey: "userLoginAPPID")! != "unknown" {
+        if userDefaults.string(forKey: "userLoginAPPID") != nil && userDefaults.string(forKey: "userLoginAPPID")! != "unknown" {
             ApiControl.shared.GetProfileAPI(UserID: userDefaults.string(forKey: "userLoginAPPID")!){
                 (result) in
                 switch result{
@@ -148,7 +148,7 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(userConGetProfile: UGProfileDec(id: "", status: "", created: "", lastLogin: "", profile: ProfileUG(firstName: "", lastName: "", email: "", login: "", birthday: "", profileUrl: "")))
+        ContentView(userConGetProfile: UGProfileDec(id: "", status: "", created: "", profile: Profile(firstName: "", lastName: "", email: "", login: "", birthday: "", profileUrl: "")))
     }
 }
 

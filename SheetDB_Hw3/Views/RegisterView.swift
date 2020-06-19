@@ -31,6 +31,9 @@ struct RegisterView: View {
         UITableView.appearance().backgroundColor = .clear
         UITableViewCell.appearance().backgroundColor = .clear
         UINavigationBar.appearance().tintColor = UIColor.black
+        UITabBar.appearance().barTintColor = UIColor.black
+        UINavigationBar.appearance().barTintColor = .init(red: 245/255, green: 230/255, blue: 170/255, alpha: 0.5)
+        UINavigationBar.appearance().isTranslucent = true
     }
     
     var body: some View {
@@ -71,13 +74,17 @@ struct RegisterView: View {
                             Image(uiImage: selectImage!)
                                 .resizable()
                                 .renderingMode(.original)
+                                //.frame(width:UIScreen.main.bounds.width - 100, height: 250)
+                                .scaledToFill()
                         } else {
                             Image(systemName: "photo")
                                 .resizable()
+                                //.frame(width:UIScreen.main.bounds.width - 100, height: 250)
+                                .scaledToFill()
                         }
                     }
                     .scaledToFill()
-                    .frame(width: 310, height: 310)
+                    //.frame(width: 310, height: 310)
                     .clipped()
                     .foregroundColor(.white)
                     Text("Select Profile Photo")
@@ -165,7 +172,9 @@ struct RegisterView: View {
                                             switch result {
                                             case .success( _):
                                                 print("CRQ changed.")
-                                                self.presentationMode.wrappedValue.dismiss()
+                                                DispatchQueue.main.async {
+                                                    self.presentationMode.wrappedValue.dismiss()
+                                                }
                                             case .failure( _):
                                                 print("CRQ Error.")
                                                 break
@@ -185,7 +194,9 @@ struct RegisterView: View {
                                             switch result {
                                             case .success( _):
                                                 print("CRQ changed.")
-                                                self.presentationMode.wrappedValue.dismiss()
+                                                DispatchQueue.main.async {
+                                                    self.presentationMode.wrappedValue.dismiss()
+                                                }
                                             case .failure( _):
                                                 print("CRQ Error.")
                                                 break
@@ -210,7 +221,9 @@ struct RegisterView: View {
                                     switch result {
                                     case .success( _):
                                         print("CRQ changed.")
-                                        self.presentationMode.wrappedValue.dismiss()
+                                        DispatchQueue.main.async {
+                                            self.presentationMode.wrappedValue.dismiss()
+                                        }
                                     case .failure( _):
                                         print("CRQ Error.")
                                         break

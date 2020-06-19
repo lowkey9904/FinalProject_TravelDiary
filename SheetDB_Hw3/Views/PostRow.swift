@@ -30,6 +30,36 @@ struct PostRow: View {
             }.padding(10)
             if Post.pictureURL != ""{
                 if Post.pictureURL2 != ""{
+                    if Post.pictureURL3 != ""{
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack{
+                                URLImage(URL(string: Post.pictureURL)!) { (proxy) in
+                                    proxy.image
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width:400, height: 400)
+                                        .cornerRadius(5)
+                                        .shadow(radius: 30)
+                                }
+                                URLImage(URL(string: Post.pictureURL2)!) { (proxy) in
+                                    proxy.image
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width:400, height: 400)
+                                        .cornerRadius(5)
+                                        .shadow(radius: 30)
+                                }
+                                URLImage(URL(string: Post.pictureURL3)!) { (proxy) in
+                                    proxy.image
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width:400, height: 400)
+                                        .cornerRadius(5)
+                                        .shadow(radius: 30)
+                                }
+                            }.frame(height: 400)
+                        }.padding(.bottom, 30)
+                    }else{
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack{
                             URLImage(URL(string: Post.pictureURL)!) { (proxy) in
@@ -50,7 +80,7 @@ struct PostRow: View {
                             }
                         }.frame(height: 400)
                     }.padding(.bottom, 30)
-                    
+                    }
                 }else{
                     URLImage(URL(string: Post.pictureURL)!, placeholder: { (_) in
                         Image(systemName: "photo")
@@ -88,6 +118,6 @@ struct PostRow: View {
 
 struct PostRow_Previews: PreviewProvider {
     static var previews: some View {
-        PostRow(Post: MyData(userID: "00u97gz2xh3GgXDIm4x6", userName: "Lawrence Li", time: "05/09 20:53", content: "This made most viral? That's not very punk rock, but whatever, send me whatever you got.", pictureURL: "https://i.imgur.com/5PgyIOe.png", pictureURL2: "https://i.imgur.com/B3kISlX.jpg", location: "New Taipei City"))
+        PostRow(Post: MyData(userID: "00u97gz2xh3GgXDIm4x6", userName: "Lawrence Li", time: "05/09 20:53", content: "This made most viral? That's not very punk rock, but whatever, send me whatever you got.", pictureURL: "https://i.imgur.com/5PgyIOe.png", pictureURL2: "https://i.imgur.com/B3kISlX.jpg", pictureURL3: "", location: "New Taipei City"))
     }
 }

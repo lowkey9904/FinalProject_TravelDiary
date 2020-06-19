@@ -38,7 +38,6 @@ struct ProfileListRow: View {
                     .lineLimit(nil)
                     .padding(.bottom, 20)
                 Text(Post.time)
-                
             }.offset(y:-15)
         }.padding()
             .frame(height:100)
@@ -47,6 +46,6 @@ struct ProfileListRow: View {
 
 struct ProfileListRow_Previews: PreviewProvider {
     static var previews: some View {
-        ProfileListRow(Post: MyData(userID: "00u97gz2xh3GgXDIm4x6", userName: "Lawrence Li", time: "05/09 20:53", content: "This made most viral? That's not very punk rock, but whatever, send me whatever you got.", pictureURL: "https://i.imgur.com/5PgyIOe.png", pictureURL2: "", location: "New Taipei City"))
+        ProfileListRow(Post: MyData(userID: "00u97gz2xh3GgXDIm4x6", userName: "Lawrence Li", time: "05/09 20:53", content: "This made most viral? That's not very punk rock, but whatever, send me whatever you got.", pictureURL: "https://i.imgur.com/5PgyIOe.png", pictureURL2: "", pictureURL3: "", location: "New Taipei City"))
     }
 }
