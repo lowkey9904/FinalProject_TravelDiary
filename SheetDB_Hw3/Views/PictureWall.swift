@@ -88,15 +88,15 @@ struct PictureWall: View {
             })
             .navigationBarBackButtonHidden(true)
             .onAppear{
-//                ApiControl.shared.GetAllPostAPI{
-//                    (result) in
-//                    switch result {
-//                    case .success(let AllPost):
-//                        self.AllPostList = AllPost
-//                    case .failure( _):
-//                        print("Error")
-//                    }
-//                }
+                ApiControl.shared.GetAllPostAPI{
+                    (result) in
+                    switch result {
+                    case .success(let AllPost):
+                        self.AllPostList = AllPost
+                    case .failure( _):
+                        print("Error")
+                    }
+                }
                 ApiControl.shared.GetAllUserAPI(){
                     (result) in
                     switch result {

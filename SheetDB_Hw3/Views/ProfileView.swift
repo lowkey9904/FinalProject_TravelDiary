@@ -171,28 +171,28 @@ struct ProfileSubView: View{
                 print(userDefaults.string(forKey: "userLoginAPPID")!)
                 //此頁面帳號
                 print(self.userGetProfile.id)
-                //                ApiControl.shared.GetAllPostAPI{
-                //                    (result) in
-                //                    switch result {
-                //                    case .success(let AllPost):
-                //                        var count = 0
-                //                        for i in 0...AllPost.count - 1{
-                //                            if AllPost[i].userID == self.userGetProfile.id {
-                //                                count += 1
-                //                            }
-                //                        }
-                //                        if self.AllUserPostList.count != count{
-                //                            self.AllUserPostList.removeAll()
-                //                            for i in 0...AllPost.count - 1{
-                //                                if AllPost[i].userID == self.userGetProfile.id {
-                //                                    self.AllUserPostList.append(AllPost[i])
-                //                                }
-                //                            }
-                //                        }
-                //                    case .failure( _):
-                //                        print("Error")
-                //                    }
-                //                }
+                ApiControl.shared.GetAllPostAPI{
+                    (result) in
+                    switch result {
+                    case .success(let AllPost):
+                        var count = 0
+                        for i in 0...AllPost.count - 1{
+                            if AllPost[i].userID == self.userGetProfile.id {
+                                count += 1
+                            }
+                        }
+                        if self.AllUserPostList.count != count{
+                            self.AllUserPostList.removeAll()
+                            for i in 0...AllPost.count - 1{
+                                if AllPost[i].userID == self.userGetProfile.id {
+                                    self.AllUserPostList.append(AllPost[i])
+                                }
+                            }
+                        }
+                    case .failure( _):
+                        print("Error")
+                    }
+                }
                 ApiControl.shared.GetFollowAPI(UserID: self.userGetProfile.id){
                     (result) in
                     switch result {
